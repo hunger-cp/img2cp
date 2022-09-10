@@ -113,7 +113,7 @@ See the [open issues](https://github.com/hunger-cp/img2cp/issues) for a full lis
 
 Clint Wang - [@txst54](https://github.com/txst54) - wang1024x768@gmail.com
 
-Project Link: [https://github.com/hunger-cp/img2cp](https://github.com/hungercp/img2cp)
+Project Link: [https://github.com/hunger-cp/img2cp](https://github.com/hunger-cp/img2cp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
