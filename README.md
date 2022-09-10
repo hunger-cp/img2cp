@@ -103,7 +103,7 @@ Please use pip to install all required packages:
     - [ ] .fold
     - [ ] .opx
 
-See the [open issues](https://github.com/hungercp/img2cp/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/hunger-cp/img2cp/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -113,7 +113,7 @@ See the [open issues](https://github.com/hungercp/img2cp/issues) for a full list
 
 Clint Wang - [@txst54](https://github.com/txst54) - wang1024x768@gmail.com
 
-Project Link: [https://github.com/hungercp/img2cp](https://github.com/hungercp/img2cp)
+Project Link: [https://github.com/hunger-cp/img2cp](https://github.com/hungercp/img2cp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
