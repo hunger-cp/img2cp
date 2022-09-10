@@ -14,7 +14,7 @@ from skimage.draw import ellipse
 
 
 # Import CP
-IMAGE_PATH = "cp.png" #@param {type:"string"}
+IMAGE_PATH = "images/cp.png"  #@param {type:"string"}
 img = cv2.imread(IMAGE_PATH)
 
 # Isolating Points if you need them
