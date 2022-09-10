@@ -2,8 +2,8 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from kmeans import *
-import houghbundler
+# from kmeans import *
+# import houghbundler
 from matplotlib import pyplot as plt
 
 from skimage import data
