@@ -161,28 +161,40 @@ def identifyPoints(
         cv2.circle(imgcrop, tuple(map(int, point)), 3, (36, 255, 12), -1)
     print(corner_points)
     # [top left, bottom left, top right, bottom right]
-    mult = 400/(corner_points[1][1]-corner_points[0][1])
-    scaled_points = scale(points=points, multiplier=mult, anchor=corner_points[1])
+
+    # scaled_points = scale(points=points, multiplier=mult, anchor=corner_points[1])
     # need to ultiamtely transform top left anchor point to -200, 200 but for now anchor it at 0, 200 for testing purposes
     print(points.shape)
     # points = np.squeeze(points, axis=1)
-    scaled_kref = kamiyaRefTester(points, 5)
+    lower_left = corner_points[np.argmin([x + y for x, y in corner_points])]
+    upper_right = corner_points[np.argmax([x + y for x, y in corner_points])]
+    mult = 400 / (upper_right[1]-lower_left[1])
+    print(lower_left)
+    print(upper_right)
+    print(points)
+    scaled_kref = kamiyaRefTester(points, 100, lower_left=corner_points[1], upper_right=corner_points[2])
     print(scaled_kref)
-    kref = scaled_kref["closest"]["point"]/mult + corner_points[1]
-    krefa = scaled_kref["ref"] / mult + corner_points[1]
-    print(kref)
+    # kref = scaled_kref["closest"]["point"] / mult + corner_points[1]
+    # krefa = scaled_kref["ref"] / mult + corner_points[1]
+    # print(kref)
+    #print(scaled_kref)
     # yellow
-    cv2.circle(imgcrop, tuple(map(int, kref)), 3, (255, 255, 12), -1)
+    cv2.circle(imgcrop, tuple(map(int, scaled_kref["closest"]["point"])), 3, (255, 255, 12), -1)
     # pink
-    cv2.circle(imgcrop, tuple(map(int, krefa)), 3, (255, 12, 255), -1)
-    print(f"og ref: {scaled_kref['og_ref']}")
-    og_scale = lambda k: k / mult + corner_points[1]
+    cv2.circle(imgcrop, tuple(map(int, scaled_kref["ref"])), 3, (255, 12, 255), -1)
+    # print(f"og ref: {scaled_kref['og_ref']}")
+    og_scale = lambda k: k
+    # og_scale = lambda k: k / mult + corner_points[1]
     cv2.line(imgcrop, tuple(map(int, og_scale(scaled_kref['og_ref'][0][0]))),
-                       tuple(map(int, og_scale(scaled_kref['og_ref'][0][1]))),
+             tuple(map(int, og_scale(scaled_kref['og_ref'][0][1]))),
              (225, 12, 225), 3)
     cv2.line(imgcrop, tuple(map(int, og_scale(scaled_kref['og_ref'][1][0]))),
              tuple(map(int, og_scale(scaled_kref['og_ref'][1][1]))),
              (225, 12, 225), 3)
+    print(f"The reference is the intersection between: {scaled_kref['kamiya_ref'][0]}_r x {scaled_kref['kamiya_ref'][1]}_l")
+    # scale(points=points, multiplier=mult, anchor=lower_left)
+    # transform(points=points, scale=(-200, -200))
+    # print(points)
     return imgcrop
 
     # points = np.squeeze(points, axis=1)
@@ -205,7 +217,13 @@ def scale(points, multiplier, anchor):
     return points
 
 
-def kamiyaRefTester(points, thresh, lower_left = (-200, -200), upper_right = (200, 200)):
+def midpoint(p1, p2):
+    return (p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2
+
+
+def kamiyaRefTester(points, thresh, lower_left=(-200, -200), upper_right=(200, 200)):
+    # upperleft, lowerleft, upperight, lowerright
+    upper_left, lower_right = (lower_left[0], upper_right[1]), (upper_right[0], lower_left[1])
     fnames = os.listdir("./img")
     ratioList = {"l": [], "r": []}
     # Loop thru all ref images in ./img and convert them to float ratios; split by l/r
@@ -219,17 +237,33 @@ def kamiyaRefTester(points, thresh, lower_left = (-200, -200), upper_right = (20
         [r for r in itertools.product(ratioList['l'], ratioList['r'])])
     print(f"Combo Shape: {combos.shape}")
     # combos.reshape((combos.shape[0] * 2, 2))
-    cline_l = lambda r: (lower_left, (r * upper_right[0]-lower_left[0] - upper_right[0], upper_right[1]))
+    cline_l = lambda r: (lower_left, (r * (upper_right[0] - upper_left[0]) + upper_left[0], upper_right[1]))
     print("Finding intersections...")
     # store intersections in a dict to store original refs for a ref finder :D
-    intersections = [{"intersection": intersect(cline_l(c[0]), flipHorizontal(cline_l(c[1]))), "og": [cline_l(c[0]), flipHorizontal(cline_l(c[1]))]} for c in combos]
+    mirror_x = midpoint(lower_left, lower_right)[0]
+    intersections = [{"intersection": intersect(flipHorizontal(cline_l(c[0]), scale_x=mirror_x), cline_l(c[1])),
+                      "og": [flipHorizontal(cline_l(c[0]), scale_x=mirror_x), cline_l(c[1])], "kamiya_ref": c} for c in combos]
     print(f"Identifying candidates from {len(intersections)} intersections...")
-    # "og_ref" stores the original reference (2 lines that intersect). "ref" stores the actual coordinate. "closest" stores the closest point from the point-set
-    candidates = [{"og_ref": i["og"], "ref": i["intersection"], "closest": findClosestPoint(points, i["intersection"])} for i in intersections]
+    # "og_ref" stores the original reference (2 lines that intersect)
+    # "ref" stores the actual coordinate
+    # "closest" stores the closest point from the point-set
+    # "kamiya_ref" returns the original kamiya reference
+    candidates = [{"kamiya_ref": i["kamiya_ref"],
+                   "og_ref": i["og"],
+                   "ref": i["intersection"],
+                   "closest": findClosestPoint(points, i["intersection"])}
+                  for i in intersections]
     candidate = {"ref": [0, 0], "closest": {"point": [0, 0], "error": float('inf')}}
     print(f"Selecting optimal candidate from {len(candidates)} candidates")
-    # gotta fix this to upper right and lower left
-    blacklisted = [[0, 0], [-200, -200], [0, 200], [200, 0], [200, 200], [-200, 0], [0, -200]]
+    # perhaps the midpoints will be a temporary blacklist
+    """blacklisted = [lower_left, upper_left, lower_right, upper_right,
+                   (midpoint(lower_left, upper_right)),
+                   (midpoint(lower_left, upper_left)),
+                   (midpoint(lower_right, upper_right)),
+                   (midpoint(lower_left, lower_right)),
+                   (midpoint(upper_left, upper_right))]"""
+    blacklisted = [lower_left, upper_left, lower_right, upper_right]
+    # blacklisted = [[0, 0], [-200, -200], [0, 200], [200, 0], [200, 200], [-200, 0], [0, -200]]
     for c in candidates:
         # print(c["point"])
         # print(blacklisted)
@@ -273,8 +307,10 @@ def intersect(l1, l2):
     return [x, y]
 
 
-def flipHorizontal(l):
+def flipHorizontal(l, scale_x=0):
     l = np.array(l)
+    transform(l, (-scale_x, 0))
     l[0][0] = -l[0][0]
     l[1][0] = -l[1][0]
+    transform(l, (scale_x, 0))
     return l
