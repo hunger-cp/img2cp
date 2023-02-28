@@ -195,7 +195,9 @@ def identifyPoints(
     # scale(points=points, multiplier=mult, anchor=lower_left)
     # transform(points=points, scale=(-200, -200))
     # print(points)
-    return imgcrop
+    return imgcrop, \
+        str(scaled_kref['kamiya_ref'][0]).replace(".", "_")+"_r.png", \
+        str(scaled_kref['kamiya_ref'][1]).replace(".", "_") + "_l.png"
 
     # points = np.squeeze(points, axis=1)
     # print(points.tolist())

@@ -46,7 +46,8 @@ def upload_file():
 @app.route('/identifyPoints', methods=['GET'])
 def identify_points():
     filename = secrets.token_hex(16) + ".png"
-    cImage = cv2.imwrite("uploads/" + filename, functions.identifyPoints(fileName=request.args["img"],
-                                                                         pointQuality=float(request.args["pQuality"]),
-                                                                         minDistance=int(request.args["minDist"])))
-    return {"success": 1, "file": filename}
+    img, lref, rref = functions.identifyPoints(fileName=request.args["img"],
+                                               pointQuality=float(request.args["pQuality"]),
+                                               minDistance=int(request.args["minDist"]))
+    cImage = cv2.imwrite("uploads/" + filename, img)
+    return {"success": 1, "file": filename, "lref_file": lref, "rref_file": rref}
