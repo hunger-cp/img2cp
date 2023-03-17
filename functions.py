@@ -1,6 +1,6 @@
 import itertools
 import os
-
+import pickle
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -144,13 +144,30 @@ def identifyPoints(
            [box[0][-1], box[1][-1]]]
     corner_points = np.squeeze(np.array([findClosestPoint(points, apx_p)["point"] for apx_p in acp]))
 
+    temp = []
+    for point in points:
+        matches = False
+        for corner_point in corner_points:
+            if (point == corner_point).all():
+                matches = True
+        if not matches:
+            temp.append(point)
+
+    points = np.array(temp)
+    lower_left = corner_points[np.argmin([x + y for x, y in corner_points])]
+    upper_right = corner_points[np.argmax([x + y for x, y in corner_points])]
+    lower_left = [lower_left[0], lower_left[0]]
+    upper_right = [upper_right[0], upper_right[0]]
+    corner_points = [[lower_left[0], upper_right[0]], lower_left, upper_right, [upper_right[0], lower_left[0]]]
+    points = np.concatenate((points, corner_points), axis=0)
+
+
     # edge lines
     lines = [[corner_points[0], corner_points[1]],
              [corner_points[0], corner_points[2]],
              [corner_points[1], corner_points[3]],
              [corner_points[2], corner_points[3]]]
 
-    print(corner_points)
     for point in points:
         cv2.circle(imgcrop, tuple(map(int, point)), 3, (36, 255, 12), -1)
     for corner_point in corner_points:
@@ -195,6 +212,14 @@ def identifyPoints(
     # scale(points=points, multiplier=mult, anchor=lower_left)
     # transform(points=points, scale=(-200, -200))
     # print(points)
+
+    #save all cv generated coordinates + starting coordinate (both actual and offset)
+    with open('points.pickle', 'wb') as handle:
+        pickle.dump(
+            # (all_cv_generated_coor, offset_start_coor, actual_start_coor)
+            (points, scaled_kref["ref"], scaled_kref["closest"]["point"], corner_points)
+            , handle)
+
     return imgcrop
 
     # points = np.squeeze(points, axis=1)

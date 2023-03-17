@@ -15,5 +15,6 @@ scaled_kref = {'og_ref': [((-200, -200), (714.284, 200)), np.array([[ 200., -200
        [ 175.,  200.]])]}
 print((tuple(map(int, scaled_kref['og_ref'][0][0]))),
                        tuple(map(int, scaled_kref['og_ref'][0][1])))
-plt.imshow(functions.identifyPoints(fileName="cp.png", pointQuality=0.1, minDistance=5))
+plt.imshow(functions.identifyPoints(fileName="cp3.png", pointQuality=0.1, minDistance=5))
 plt.show()
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-0
