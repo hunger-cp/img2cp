@@ -212,15 +212,9 @@ def identifyPoints(
     # scale(points=points, multiplier=mult, anchor=lower_left)
     # transform(points=points, scale=(-200, -200))
     # print(points)
-
-    #save all cv generated coordinates + starting coordinate (both actual and offset)
-    with open('points.pickle', 'wb') as handle:
-        pickle.dump(
-            # (all_cv_generated_coor, offset_start_coor, actual_start_coor)
-            (points, scaled_kref["ref"], scaled_kref["closest"]["point"], corner_points)
-            , handle)
-
-    return imgcrop
+    return imgcrop, \
+        str(scaled_kref['kamiya_ref'][0]).replace(".", "_")+"_l.png", \
+        str(scaled_kref['kamiya_ref'][1]).replace(".", "_") + "_r.png"
 
     # points = np.squeeze(points, axis=1)
     # print(points.tolist())
@@ -266,8 +260,8 @@ def kamiyaRefTester(points, thresh, lower_left=(-200, -200), upper_right=(200, 2
     print("Finding intersections...")
     # store intersections in a dict to store original refs for a ref finder :D
     mirror_x = midpoint(lower_left, lower_right)[0]
-    intersections = [{"intersection": intersect(flipHorizontal(cline_l(c[0]), scale_x=mirror_x), cline_l(c[1])),
-                      "og": [flipHorizontal(cline_l(c[0]), scale_x=mirror_x), cline_l(c[1])], "kamiya_ref": c} for c in combos]
+    intersections = [{"intersection": intersect(cline_l(c[0]), flipHorizontal(cline_l(c[1]), scale_x=mirror_x)),
+                      "og": [cline_l(c[0]), flipHorizontal(cline_l(c[1]), scale_x=mirror_x)], "kamiya_ref": c} for c in combos]
     print(f"Identifying candidates from {len(intersections)} intersections...")
     # "og_ref" stores the original reference (2 lines that intersect)
     # "ref" stores the actual coordinate
