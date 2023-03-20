@@ -16,6 +16,6 @@ scaled_kref = {'og_ref': [((-200, -200), (714.284, 200)), np.array([[ 200., -200
 print((tuple(map(int, scaled_kref['og_ref'][0][0]))),
                        tuple(map(int, scaled_kref['og_ref'][0][1])))
 
-img, _, _ = functions.identifyPoints(fileName="cp.png", pointQuality=0.1, minDistance=5)
-plt.imshow(img)
+bruh = functions.identifyPoints(fileName="./uploads/cp.png", pointQuality=0.1, minDistance=5, debug=True)
+plt.imshow(bruh)
 plt.show()

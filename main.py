@@ -1,10 +1,10 @@
 import helpers as func
 import backend_alg as bfunc
+import functions
 
-
-data = func.upload_file()
+im_name = r'./uploads/cp.png'
+data = functions.identifyPoints(fileName=im_name, pointQuality=0.1, minDistance=5)
 points, actual_ref, offset_ref, corner_points = data[0], data[1], data[2], data[3]
-im_name = r'C:\Users\clark\Documents\GitHub\img2cp\uploads\cp3.png'
 func.gl(im_name, points, offset_ref, actual_ref, corner_points)
 # func.check_found_links(im_name, points, offset_ref, actual_ref, corner_points)
 

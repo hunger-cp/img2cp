@@ -62,6 +62,7 @@ def init_images(im_name, points):
     clarify_BGR(im)
     debug_im = np.ones((height, width, 3)) * 255
     for point in points:
+        print(point)
         cv2.circle(im, point, 3, (0, 0, 0), 1)
     return im, debug_im
 def create_plot(images):

@@ -21,7 +21,7 @@ def get_links(points, image, debug_image):
                 else:
                     links[tuple(start)] = [(end, angle)]
 
-debug = False
+debug = True
 def get_lines(points, offset_pt, kwn_pt, corners, image, debug_image, im_name):
     global unsolved_kpts, lines, links, act2off
 
@@ -127,7 +127,7 @@ def get_lines(points, offset_pt, kwn_pt, corners, image, debug_image, im_name):
                 debug_image = cv2.line(debug_image, tuple(int(num) for num in line[0][0]),
                                        tuple(int(num) for num in line[0][1]), (0, 0, 255), 5)
                 print(line)
-
+            print(line)
             # check if the line has been found via other endpoint already
             if not (line[0][1], line[0][0]) in lines:
                     lines.add(line)

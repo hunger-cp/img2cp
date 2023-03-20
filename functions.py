@@ -20,19 +20,22 @@ def identifyPoints(
         fileName: str,
         pointQuality: float,
         minDistance: int,
-        top_crop: int = 0):
+        top_crop: int = 0,
+        debug: bool = False):
     """
     Identify possible point canddiates on a crease pattern image
+    :param debug: debug mode
     :param top_crop: top of image to crop off (for reference images, 55)
     :param fileName: name of image file
     :param pointQuality: point quality threshold, 0-1 by steps of .1
     :param minDistance: minimum distance between point candidates in pixels
-    :return: (n, 2) list of n point candidate coordinates
+    :return: points = (n, 2) list of n point candidate coordinates [points, offset_ref, actual_ref, corner_points]
     """
     # Import CP
     """IMAGE_PATH = "images/cp.png"  #@param {type:"string"}
     img = cv2.imread(IMAGE_PATH)"""
-    img = cv2.imread('uploads/' + fileName)
+    # img = cv2.imread('uploads/' + fileName)
+    img = cv2.imread(fileName)
     # img = cv2.resize(img, dsize=[4*i for i in img.shape[:-1]], fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
     # Isolating Points if you need them
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -154,11 +157,12 @@ def identifyPoints(
             temp.append(point)
 
     points = np.array(temp)
-    lower_left = corner_points[np.argmin([x + y for x, y in corner_points])]
-    upper_right = corner_points[np.argmax([x + y for x, y in corner_points])]
-    lower_left = [lower_left[0], lower_left[0]]
-    upper_right = [upper_right[0], upper_right[0]]
-    corner_points = [[lower_left[0], upper_right[0]], lower_left, upper_right, [upper_right[0], lower_left[0]]]
+    # Image <- 0x, 0 ->y
+    upper_left = corner_points[np.argmin([x + y for x, y in corner_points])]
+    lower_right = corner_points[np.argmax([x + y for x, y in corner_points])]
+    # lower_left = [lower_left[0], lower_left[0]]
+    # upper_right = [upper_right[0], upper_right[0]]
+    corner_points = [[upper_left[0], lower_right[1]], upper_left, lower_right, [lower_right[0], upper_left[1]]]
     points = np.concatenate((points, corner_points), axis=0)
 
 
@@ -212,10 +216,16 @@ def identifyPoints(
     # scale(points=points, multiplier=mult, anchor=lower_left)
     # transform(points=points, scale=(-200, -200))
     # print(points)
+
+    """
+    # FOR RETURN OF REFERENCE
     return imgcrop, \
         str(scaled_kref['kamiya_ref'][0]).replace(".", "_")+"_l.png", \
         str(scaled_kref['kamiya_ref'][1]).replace(".", "_") + "_r.png"
-
+    """
+    if debug:
+        return imgcrop
+    return [[tuple(map(int, p)) for p in points], tuple(map(int, scaled_kref["closest"]['point'])), tuple(scaled_kref["ref"]), [tuple(map(int, c)) for c in corner_points]]
     # points = np.squeeze(points, axis=1)
     # print(points.tolist())
     # return points.tolist()
