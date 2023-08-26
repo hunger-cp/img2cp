@@ -60,7 +60,13 @@
 
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-Converts `.png`/`.jpg` images of M/V crease patterns into common cp file formats. 
+Currently identifies 2 starting reference folds given `.png`/`.jpg` images of M/V crease patterns.
+
+![Image of Web App](image.png?raw=true "Image of Web App")
+
+Frontend code can be found at [https://github.com/hunger-cp/img2cp-frontend](https://github.com/hunger-cp/img2cp-frontend)
+
+Goal: Convert `.png`/`.jpg` images of M/V crease patterns into common cp file formats. 
 
 Pipeline: 
 * Detect corners as possible vertices in crease pattern
@@ -130,6 +136,8 @@ README:
 Thank you to the following contributers: 
 * [DracoWard](https://github.com/DracoWard)
 * [Spinomishra](https://github.com/spinomishra)
+
+Starting Reference Finder uses Kamiya's References: [https://www.folders.jp/reference/reference.html](https://www.folders.jp/reference/reference.html)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
