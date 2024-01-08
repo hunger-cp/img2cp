@@ -66,6 +66,8 @@ Currently identifies 2 starting reference folds given `.png`/`.jpg` images of M/
 
 Frontend code can be found at [https://github.com/hunger-cp/img2cp-frontend](https://github.com/hunger-cp/img2cp-frontend)
 
+A demo of this program can be found on [https://colab.research.google.com/drive/1zbKQMQm-CBQU1WjXgZEqbIYEnOUe-WI-?usp=sharing](https://colab.research.google.com/drive/1zbKQMQm-CBQU1WjXgZEqbIYEnOUe-WI-?usp=sharing)
+
 Goal: Convert `.png`/`.jpg` images of M/V crease patterns into common cp file formats. 
 
 Pipeline: 
