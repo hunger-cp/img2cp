@@ -141,7 +141,7 @@ Starting Reference Finder uses Kamiya's References: [https://www.folders.jp/refe
 
 Crease Patterns in Examples folder taken from:
  * raiden_shogun.webp - Chen Xiao
- * switzerland.cp - Kei Morisue
+ * switzerland.webp - Kei Morisue
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
