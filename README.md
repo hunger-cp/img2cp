@@ -139,6 +139,10 @@ Thank you to the following contributers:
 
 Starting Reference Finder uses Kamiya's References: [https://www.folders.jp/reference/reference.html](https://www.folders.jp/reference/reference.html)
 
+Crease Patterns in Examples folder taken from:
+ * raiden_shogun.webp - Chen Xiao
+ * switzerland.cp - Kei Morisue
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
